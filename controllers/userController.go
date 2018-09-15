@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	// "fmt"
 	"github.com/ChallenAi/iTools-service/models"
 	"github.com/ChallenAi/iTools-service/utils"
@@ -13,11 +12,8 @@ func GetAllUsers(ctx *fasthttp.RequestCtx) {
 		UserId:   1,
 		UserName: "Challen",
 	}
-	resp, _ := json.Marshal(user)
 
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	ctx.SetContentType("application/json")
-	ctx.Write(resp)
+	utils.RespJson(ctx, user)
 }
 
 func Login(ctx *fasthttp.RequestCtx) {
