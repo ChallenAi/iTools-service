@@ -1,24 +1,21 @@
 package main
 
 import (
+	"fmt"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
 	"log"
 )
 
-type OkResp struct {
-	Code    int
-	Message string
-}
-
-func Index(ctx *fasthttp.RequestCtx) {
+func PingPong(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
-	ctx.WriteString("hello")
+	ctx.WriteString("pong")
 }
 
 func main() {
 	router := fasthttprouter.New()
-	router.GET("/", Index)
+	router.GET("/ping", PingPong)
 
+	fmt.Println("server is running at 9215...\n")
 	log.Fatal(fasthttp.ListenAndServe(":9215", router.Handler))
 }
