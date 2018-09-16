@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/ChallenAi/iTools-service/controllers"
+	"github.com/ChallenAi/iTools-service/models"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
 	"log"
@@ -22,7 +23,16 @@ func Handle(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	})
 }
 
+// func Migrate(db *gorm.DB) {
+// 	users.AutoMigrate()
+// 	db.AutoMigrate(&models.User{})
+// }
+
 func main() {
+	db := models.InitDB()
+	// Migrate(db)
+	defer db.Close()
+
 	router := fasthttprouter.New()
 	router.GET("/ping", PingPong)
 

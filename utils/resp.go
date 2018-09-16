@@ -33,10 +33,15 @@ func ServerFail(ctx *fasthttp.RequestCtx) {
 }
 
 func RespJson(ctx *fasthttp.RequestCtx, v interface{}) {
-	resp, err := json.Marshal(v)
+	succMsg := map[string]interface{}{
+		"code": 0,
+		"data": v,
+	}
+	resp, err := json.Marshal(succMsg)
 	if err != nil {
 		ServerFail(ctx)
 	}
+
 	ctx.SetStatusCode(fasthttp.StatusOK)
 	ctx.SetContentType("application/json")
 	ctx.Write(resp)

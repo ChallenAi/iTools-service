@@ -8,12 +8,11 @@ import (
 )
 
 func GetAllUsers(ctx *fasthttp.RequestCtx) {
-	user := &models.User{
-		UserId:   1,
-		UserName: "Challen",
+	users, err := models.FindAllUsers()
+	if err != nil {
+		utils.ServerFail(ctx)
 	}
-
-	utils.RespJson(ctx, user)
+	utils.RespJson(ctx, users)
 }
 
 func Login(ctx *fasthttp.RequestCtx) {

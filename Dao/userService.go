@@ -1,5 +1,0 @@
-package Dao
-
-import (
-	"fmt"
-)
