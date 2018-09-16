@@ -9,6 +9,38 @@ import (
 )
 
 func GetArticles(ctx *fasthttp.RequestCtx) {
+
+	q := ctx.QueryArgs()
+
+	condition := &models.ArticleCondition{}
+
+	if q.deleted == "1" {
+		condition.Params.IsDelete = true
+	} else {
+		condition.Params.IsDelete = false
+	}
+
+	if q.page != nil {
+		condition.Params.UserId = q.uid
+	}
+
+	if q.perpage != nil {
+		condition.Params.UserId = q.uid
+	}
+
+	if q.uid != nil {
+		condition.Params.UserId = q.uid
+	}
+
+	if q.keyword != nil {
+		condition.keyword = q.keyword
+	}
+
+	if q.typeId != nil {
+		condition.Params = q.typeId
+	}
+
+	// artilces, err := models.GetArticles(condition)
 }
 
 func GetArticlesTitles(ctx *fasthttp.RequestCtx) {
