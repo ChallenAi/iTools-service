@@ -6,16 +6,16 @@ import (
 )
 
 type User struct {
-	UserId             int `gorm:"type:int(8);PRIMARY_KEY"`
-	UserName           string
-	Password           string
-	PhoneNum           string
-	Avatar             string
-	CreateAt           time.Time `gorm:"Column:gmt_create"`
-	UpdateAt           time.Time `gorm:"Column:gmt_modified"`
-	IsValid            bool
-	IsDeleted          bool `gorm:"Column:is_delete"`
-	PasswordVerifyCode string
+	UserId             int       `gorm:"type:int(8);PRIMARY_KEY" json:"userId"`
+	UserName           string    `json:"userName"`
+	Password           string    `json:"password"`
+	PhoneNum           string    `json:"phoneNum"`
+	Avatar             string    `json:"avatar"`
+	CreateAt           time.Time `gorm:"Column:gmt_create" json:"createAt"`
+	UpdateAt           time.Time `gorm:"Column:gmt_modified" json:"updateAt"`
+	IsValid            bool      `json:"-"`
+	IsDeleted          bool      `gorm:"Column:is_delete" json:"-"`
+	PasswordVerifyCode string    `json:"-"`
 }
 
 func (User) TableName() string {

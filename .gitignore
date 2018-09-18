@@ -12,3 +12,4 @@
 *.out
 
 conf/conf.go
+.DS_Store
