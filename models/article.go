@@ -32,9 +32,6 @@ func (Article) TableName() string {
 func GetArticles(condition *ArticleCondition) ([]Article, error) {
 	var articles []Article
 	err := DB.Find(&articles).Error
-	// if err != nil {
-	// 	fmt.Print(err)
-	// }
 	return articles, err
 }
 

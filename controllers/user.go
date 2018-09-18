@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"time"
 	// "fmt"
 	"github.com/ChallenAi/iTools-service/models"
 	"github.com/ChallenAi/iTools-service/utils"
 	"github.com/valyala/fasthttp"
+	"github.com/lib/pq"
 )
 
 func GetAllUsers(ctx *fasthttp.RequestCtx) {
@@ -49,6 +51,27 @@ func Login(ctx *fasthttp.RequestCtx) {
 }
 
 func Register(ctx *fasthttp.RequestCtx) {
-	utils.RespFail(ctx, 400, "request error: register denny")
+	user := &models.User{
+		UserName: "小子",
+		Password: "1234",
+		PhoneNum: "15317752613",
+		Avatar: "/img/timg.jpeg",
+		CreateAt: time.Now(),
+		UpdateAt: time.Now(),
+		IsValid: true,
+		IsDeleted: false,
+		PasswordVerifyCode: "abcd",
+	}
 
+	err := user.Persist()
+	if err != nil {
+		if err.(*pq.Error).Code.Name() == "unique_violation" {
+			utils.RespFail(ctx, 400, "duplicated: phoneNum")
+		} else {
+			utils.ServerFail(ctx)
+		}
+		return
+	}
+	utils.RespSucc(ctx)
+	// utils.RespFail(ctx, 400, "request error: register denny")
 }

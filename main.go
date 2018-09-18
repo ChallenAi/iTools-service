@@ -38,7 +38,11 @@ func main() {
 	router.POST("/api/article", Handle(controllers.PostArticle))
 	router.GET("/api/articles/tags", Handle(controllers.GetAllTags))
 
+	// gist
 	router.GET("/api/tips", Handle(controllers.GetGists))
+	router.POST("/api/tip", Handle(controllers.AddGist))
+	router.PUT("/api/tip/:id", Handle(controllers.EditGist))
+	router.DELETE("/api/tip/:id", Handle(controllers.DeleteGist))
 
 	router.NotFound = controllers.NotFound
 

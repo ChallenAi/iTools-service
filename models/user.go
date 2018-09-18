@@ -22,18 +22,13 @@ func (User) TableName() string {
 	return "user"
 }
 
-// user.save
-// func (user *User) save() error {
-// 	return db.Model(user).Updates(map[string]interface{}{
-// 		"view": post.View,
-// 	}).Error
-// }
+func (user *User) Persist() error {
+	DB.NewRecord(*user)
+	return DB.Create(user).Error
+}
 
 func FindAllUsers() ([]User, error) {
 	var users []User
 	err := DB.Find(&users).Error
-	// if err != nil {
-	// 	fmt.Print(err)
-	// }
 	return users, err
 }

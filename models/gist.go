@@ -30,3 +30,9 @@ func GetGists() ([]Gist, error) {
 	err := DB.Find(&gists).Error
 	return gists, err
 }
+
+func AddGist(gist *Gist) bool {
+	ok := DB.NewRecord(*gist)
+	// db.Create(&user)
+	return ok
+}
