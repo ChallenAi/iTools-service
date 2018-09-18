@@ -38,6 +38,8 @@ func main() {
 	router.POST("/api/article", Handle(controllers.PostArticle))
 	router.GET("/api/articles/tags", Handle(controllers.GetAllTags))
 
+	router.GET("/api/tips", Handle(controllers.GetGists))
+
 	router.NotFound = controllers.NotFound
 
 	router.ServeFiles("/img/*filepath", "static/img")
