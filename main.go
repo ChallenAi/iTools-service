@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/ChallenAi/iTools-service/conf"
 	"github.com/ChallenAi/iTools-service/controllers"
 	"github.com/ChallenAi/iTools-service/models"
 	"github.com/buaazp/fasthttprouter"
@@ -9,12 +10,7 @@ import (
 	"log"
 )
 
-func PingPong(ctx *fasthttp.RequestCtx) {
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	ctx.WriteString("pong")
-}
-
-// Maybe there's a better way to realize a middleware
+// middleware
 func Handle(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return fasthttp.RequestHandler(func(ctx *fasthttp.RequestCtx) {
 		fmt.Println(string(ctx.Method()) + " - " + ctx.URI().String())
@@ -23,18 +19,12 @@ func Handle(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	})
 }
 
-// func Migrate(db *gorm.DB) {
-// 	users.AutoMigrate()
-// 	db.AutoMigrate(&models.User{})
-// }
-
 func main() {
 	db := models.InitDB()
-	// Migrate(db)
 	defer db.Close()
 
 	router := fasthttprouter.New()
-	router.GET("/ping", PingPong)
+	router.GET("/ping", Handle(controllers.Pong))
 
 	// user
 	router.GET("/api/users", Handle(controllers.GetAllUsers))
@@ -48,10 +38,10 @@ func main() {
 	router.POST("/api/article", Handle(controllers.PostArticle))
 	router.GET("/api/articles/tags", Handle(controllers.GetAllTags))
 
-	//
+	router.NotFound = controllers.NotFound
 
-	// xx
+	router.ServeFiles("/img/*filepath", "static/img")
 
-	fmt.Println("server is running at 9215...\n")
-	log.Fatal(fasthttp.ListenAndServe(":9215", router.Handler))
+	fmt.Println("server is running at " + conf.Port + "...")
+	log.Fatal(fasthttp.ListenAndServe(":"+conf.Port, router.Handler))
 }

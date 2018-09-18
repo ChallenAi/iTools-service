@@ -12,7 +12,7 @@ func GetAllUsers(ctx *fasthttp.RequestCtx) {
 	if err != nil {
 		utils.ServerFail(ctx)
 	}
-	utils.RespJson(ctx, users)
+	utils.RespData(ctx, users)
 }
 
 func Login(ctx *fasthttp.RequestCtx) {
@@ -20,13 +20,13 @@ func Login(ctx *fasthttp.RequestCtx) {
 
 	phoneNum := string(postArgs.Peek("phoneNum"))
 	if phoneNum == "" {
-		utils.ReqFail(ctx, "request error: phoneNum or password is wrong")
+		utils.RespFail(ctx, 400, "request error: phoneNum or password is wrong")
 		return
 	}
 
 	password := string(postArgs.Peek("password"))
 	if password == "" {
-		utils.ReqFail(ctx, "request error: password or password is wrong")
+		utils.RespFail(ctx, 400, "request error: password or password is wrong")
 		return
 	}
 
@@ -37,18 +37,18 @@ func Login(ctx *fasthttp.RequestCtx) {
 
 	if phoneNum == "Test" {
 		if password == "1234" {
-			utils.RespJson(ctx, user)
+			utils.RespData(ctx, user)
 			return
 		} else {
-			utils.ReqFail(ctx, "request error: password error")
+			utils.RespFail(ctx, 400, "request error: password error")
 			return
 		}
 	} else {
-		utils.ReqFail(ctx, "request error: user not found")
+		utils.RespFail(ctx, 400, "request error: user not found")
 	}
 }
 
 func Register(ctx *fasthttp.RequestCtx) {
-	utils.ReqFail(ctx, "request error: register denny")
+	utils.RespFail(ctx, 400, "request error: register denny")
 
 }

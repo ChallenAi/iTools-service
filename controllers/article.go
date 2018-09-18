@@ -13,34 +13,41 @@ func GetArticles(ctx *fasthttp.RequestCtx) {
 	q := ctx.QueryArgs()
 
 	condition := &models.ArticleCondition{}
+	condition.Params = map[string]interface{}{}
 
-	if q.deleted == "1" {
-		condition.Params.IsDelete = true
+	if q.Peek("deleted") != nil && string(q.Peek("deleted")) == "1" {
+		condition.Params["IsDelete"] = true
 	} else {
-		condition.Params.IsDelete = false
+		condition.Params["IsDelete"] = false
 	}
 
-	if q.page != nil {
-		condition.Params.UserId = q.uid
+	// if q.Peek("page") != nil {
+	// 	condition.Params.UserId = q.uid
+	// }
+
+	// if q.Peek("perpage") != nil {
+	// 	condition.Params.UserId = q.uid
+	// }
+
+	if p3 := q.Peek("uid"); p3 != nil {
+		condition.Params["IsDelete"] = string(p3)
 	}
 
-	if q.perpage != nil {
-		condition.Params.UserId = q.uid
+	if p4 := q.Peek("keyword"); p4 != nil {
+		condition.Keyword = string(p4)
 	}
 
-	if q.uid != nil {
-		condition.Params.UserId = q.uid
+	if p5 := q.Peek("typeId"); p5 != nil {
+		condition.Params["typeId"] = string(p5)
 	}
 
-	if q.keyword != nil {
-		condition.keyword = q.keyword
-	}
+	articles, err := models.GetArticles(condition)
 
-	if q.typeId != nil {
-		condition.Params = q.typeId
+	if err != nil {
+		utils.ServerFail(ctx)
+	} else {
+		utils.RespData(ctx, articles)
 	}
-
-	// artilces, err := models.GetArticles(condition)
 }
 
 func GetArticlesTitles(ctx *fasthttp.RequestCtx) {
@@ -55,7 +62,7 @@ func GetArticle(ctx *fasthttp.RequestCtx) {
 
 	articleId, err := strconv.Atoi(articleIdString)
 	if err != nil {
-		utils.ReqFail(ctx, "request error: article id must be sequence_id")
+		utils.RespFail(ctx, 400, "request error: article id must be sequence_id")
 		return
 	}
 
@@ -64,7 +71,7 @@ func GetArticle(ctx *fasthttp.RequestCtx) {
 		Title:     "nice",
 	}
 
-	utils.RespJson(ctx, article)
+	utils.RespData(ctx, article)
 }
 
 func PostArticle(ctx *fasthttp.RequestCtx) {
