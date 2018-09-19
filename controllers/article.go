@@ -10,6 +10,30 @@ import (
 
 func GetArticles(ctx *fasthttp.RequestCtx) {
 
+	// const q = req.query
+	// // 查询参数
+	// const condition = {}
+	// // 查询参数：带默认值的，必须有的
+	// condition.deleted = (q.deleted === '1')?true:false
+	// const page = parseInt(q.page || 1)
+	// const limit = parseInt(q.perpage || 10)
+	// const offset = limit * (page - 1)
+	// // 如果查询特定用户/类型的文章
+	// if (q.uid) condition.userId = q.uid
+	// if (q.typeId) condition.typeId = q.typeId
+	// if (q.keyword) condition.keyword = q.keywor
+
+	validator := utils.Validator{
+		Rules: map[string]utils.RuleItem{
+			"deleted": utils.RuleItem{ Type: "int", Required: true },
+			"page": utils.RuleItem{ Type: "int", Required: false },
+		},
+	}
+	validator.Validate(ctx.QueryArgs())
+
+
+
+
 	q := ctx.QueryArgs()
 
 	condition := &models.ArticleCondition{}
