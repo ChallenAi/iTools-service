@@ -14,3 +14,11 @@ func GetTags(ctx *fasthttp.RequestCtx) {
 	}
 	utils.RespData(ctx, tags)
 }
+
+func GetTagsTree(ctx *fasthttp.RequestCtx) {}
+
+func AddTag(ctx *fasthttp.RequestCtx) {}
+
+func DeleteTag(ctx *fasthttp.RequestCtx) {}
+
+func EditTag(ctx *fasthttp.RequestCtx) {}

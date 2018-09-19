@@ -14,3 +14,9 @@ func GetShares(ctx *fasthttp.RequestCtx) {
 	}
 	utils.RespData(ctx, shares)
 }
+
+func AddShare(ctx *fasthttp.RequestCtx) {}
+
+func DeleteShare(ctx *fasthttp.RequestCtx) {}
+
+func EditShare(ctx *fasthttp.RequestCtx) {}

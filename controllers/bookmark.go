@@ -14,3 +14,9 @@ func GetBookmarks(ctx *fasthttp.RequestCtx) {
 	}
 	utils.RespData(ctx, bookmarks)
 }
+
+func AddBookmark(ctx *fasthttp.RequestCtx) {}
+
+func DeleteBookmark(ctx *fasthttp.RequestCtx) {}
+
+func EditBookmark(ctx *fasthttp.RequestCtx) {}

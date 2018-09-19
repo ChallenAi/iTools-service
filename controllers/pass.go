@@ -14,3 +14,9 @@ func GetPasswords(ctx *fasthttp.RequestCtx) {
 	}
 	utils.RespData(ctx, passwords)
 }
+
+func AddPass(ctx *fasthttp.RequestCtx) {}
+
+func DeletePass(ctx *fasthttp.RequestCtx) {}
+
+func EditPass(ctx *fasthttp.RequestCtx) {}
