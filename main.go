@@ -50,7 +50,7 @@ func main() {
 	router.PUT("/api/share/:id", Handle(controllers.EditShare))
 	router.DELETE("/api/share/:id", Handle(controllers.DeleteShare))
 
-	// graph
+	// tag
 	router.GET("/api/tags", Handle(controllers.GetTags))
 	router.GET("/api/tagstree", Handle(controllers.GetTagsTree))
 	router.POST("/api/tag", Handle(controllers.AddTag))
