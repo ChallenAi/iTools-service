@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  itools-service:
+    image: itools-service
+    build: .
+    ports:
+      - 9215:9215

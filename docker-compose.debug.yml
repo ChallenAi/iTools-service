@@ -1,0 +1,10 @@
+version: '2.1'
+
+services:
+  itools-service:
+    image: itools-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+        - 9215:9215
