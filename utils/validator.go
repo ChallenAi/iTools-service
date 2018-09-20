@@ -9,7 +9,7 @@ import (
 )
 
 type RuleItem struct {
-	Type string
+	Type     string
 	Required bool
 }
 
@@ -31,35 +31,35 @@ func (v *Validator) Validate(peekrable Peekrable) (map[string]interface{}, []str
 		// fmt.Print(p)
 
 		if ruleItem.Required == true && p == nil {
-			errors = append(errors, param + " is required")
+			errors = append(errors, param+" is required")
 			continue
 		}
 
 		if p != nil {
 			switch ruleItem.Type {
-			case "string":
-				if IsString(ruleItem.Type) {
+			case "numericId":
+				if IsNumericId(ruleItem.Type) {
 					data[param] = string(peekrable.Peek(param))
 				} else {
-					errors = append(errors, param + " is invalid")
+					errors = append(errors, param+" is invalid")
 				}
-			case "bool":
-				if IsBool(ruleItem.Type) {
+			case "binary":
+				if IsBinary(ruleItem.Type) {
 					data[param] = string(peekrable.Peek(param))
 				} else {
-					errors = append(errors, param + " is invalid")
+					errors = append(errors, param+" is invalid")
 				}
-			case "int":
-				if IsInt(ruleItem.Type) {
+			case "numeric":
+				if IsNumeric(ruleItem.Type) {
 					data[param] = string(peekrable.Peek(param))
 				} else {
-					errors = append(errors, param + " is invalid")
+					errors = append(errors, param+" is invalid")
 				}
 			case "phoneNum":
-				if IsString(ruleItem.Type) {
+				if IsPhoneNum(ruleItem.Type) {
 					data[param] = string(peekrable.Peek(param))
 				} else {
-					errors = append(errors, param + " is invalid")
+					errors = append(errors, param+" is invalid")
 				}
 			default:
 				data[param] = string(peekrable.Peek(param))
@@ -71,13 +71,11 @@ func (v *Validator) Validate(peekrable Peekrable) (map[string]interface{}, []str
 	return data, errors
 }
 
-
-
-func IsString(p string) bool {
+func IsNumericId(p string) bool {
 	return true
 }
 
-func IsInt(p string) bool {
+func IsNumeric(p string) bool {
 	return true
 }
 
@@ -85,16 +83,12 @@ func IsInt(p string) bool {
 
 // func IsPerpage(p interface{}) bool {}
 
-// func IsBinary(p interface{}) bool {}
-
-func IsBool(p interface{}) bool {
+func IsBinary(p interface{}) bool {
 	return true
 }
 
-// func IsIntId(p interface{}) bool {}
+// func IsNumericId(p interface{}) bool {}
 
 func IsPhoneNum(p interface{}) bool {
 	return true
 }
-
-
