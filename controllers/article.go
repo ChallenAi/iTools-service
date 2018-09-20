@@ -28,6 +28,7 @@ func GetArticles(ctx *fasthttp.RequestCtx) {
 	articles, err := models.SearchArticles()
 
 	if err != nil {
+		fmt.Println(err)
 		utils.ServerFail(ctx)
 	} else {
 		utils.RespData(ctx, articles)

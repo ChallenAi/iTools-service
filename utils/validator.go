@@ -67,7 +67,8 @@ func (v *Validator) Validate(peekrable Peekrable) (map[string]interface{}, []str
 		}
 	}
 
-	fmt.Println(data, errors)
+	// fmt.Println(data, errors)
+	fmt.Println("")
 	return data, errors
 }
 

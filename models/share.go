@@ -5,7 +5,7 @@ import (
 )
 
 type Share struct {
-	ShareId int       `gorm:"type:int(8);PRIMARY_KEY" json:"articleId"`
+	ShareId   int       `gorm:"type:int(8);PRIMARY_KEY" json:"articleId"`
 	UserId    int       `gorm:"type:int(8)" json:"userId"`
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
