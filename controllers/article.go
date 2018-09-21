@@ -13,12 +13,12 @@ func GetArticles(ctx *fasthttp.RequestCtx) {
 
 	validator := utils.Validator{
 		Rules: map[string]utils.RuleItem{
-			"deleted": utils.RuleItem{Type: "numeric", Required: false},
-			"page":    utils.RuleItem{Type: "numeric", Required: false},
-			"perpage": utils.RuleItem{Type: "numeric", Required: false},
-			"uid":     utils.RuleItem{Type: "numericId", Required: false},
-			"typeId":  utils.RuleItem{Type: "numericId", Required: false},
-			"keyword": utils.RuleItem{Type: "string", Required: false},
+			"deleted": utils.RuleItem{Type: "binary", Required: false},
+			"uid":     utils.RuleItem{Type: "number", Required: false},
+			"typeId":  utils.RuleItem{Type: "number", Required: false},
+			"page":    utils.RuleItem{Type: "pageNumber", Required: false},
+			"perpage": utils.RuleItem{Type: "pageSize", Required: false},
+			"keyword": utils.RuleItem{Type: "likeString", Required: false},
 		},
 	}
 

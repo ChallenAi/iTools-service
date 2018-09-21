@@ -4,6 +4,7 @@ import (
 	// "encoding/json"
 	// "github.com/valyala/fasthttp"
 	"fmt"
+	"strconv"
 	// "encoding/binary"
 	// "github.com/asaskevich/govalidator"
 )
@@ -21,9 +22,20 @@ type Peekrable interface {
 	Peek(string) []byte
 }
 
-func (v *Validator) Validate(peekrable Peekrable) (map[string]interface{}, []string) {
-	errors := []string{}
-	data := map[string]interface{}{}
+type ServiceParams struct {
+	CommonParams map[string]interface{}
+	LikeQuery    string
+	Limit        int
+	Offset       int
+}
+
+func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
+	var (
+		pageNumber int
+		pageSize   int
+		errors     []string
+		data       *ServiceParams
+	)
 	// map validator params type Mapper
 	for param, ruleItem := range v.Rules {
 
@@ -37,34 +49,56 @@ func (v *Validator) Validate(peekrable Peekrable) (map[string]interface{}, []str
 
 		if p != nil {
 			switch ruleItem.Type {
-			case "numericId":
-				if IsNumericId(ruleItem.Type) {
-					data[param] = string(peekrable.Peek(param))
+			case "pageNumber":
+				if IsPageNumber(ruleItem.Type) {
+					pageNumber, _ = strconv.Atoi(string(peekrable.Peek(param)))
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
+			case "pageSize":
+				if IsPageSize(ruleItem.Type) {
+					pageSize, _ = strconv.Atoi(string(peekrable.Peek(param)))
+				} else {
+					errors = append(errors, param+" is invalid")
+				}
+			case "likeQuery":
+				data.LikeQuery = string(peekrable.Peek(param))
 			case "binary":
 				if IsBinary(ruleItem.Type) {
-					data[param] = string(peekrable.Peek(param))
+					if string(peekrable.Peek(param)) == "1" {
+						data.CommonParams[param] = true
+					} else {
+						data.CommonParams[param] = false
+					}
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
-			case "numeric":
-				if IsNumeric(ruleItem.Type) {
-					data[param] = string(peekrable.Peek(param))
+			case "number":
+				if IsNumber(ruleItem.Type) {
+					data.CommonParams[param] = string(peekrable.Peek(param))
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
 			case "phoneNum":
 				if IsPhoneNum(ruleItem.Type) {
-					data[param] = string(peekrable.Peek(param))
+					data.CommonParams[param] = string(peekrable.Peek(param))
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
-			default:
-				data[param] = string(peekrable.Peek(param))
 			}
 		}
+	}
+
+	if pageSize != 0 {
+		data.Limit = pageSize
+	} else {
+		data.Limit = 10
+	}
+
+	if pageNumber != 0 {
+		data.Offset = data.Limit * (pageNumber - 1)
+	} else {
+		data.Offset = 0
 	}
 
 	// fmt.Println(data, errors)
@@ -72,23 +106,21 @@ func (v *Validator) Validate(peekrable Peekrable) (map[string]interface{}, []str
 	return data, errors
 }
 
-func IsNumericId(p string) bool {
+func IsNumber(p string) bool {
 	return true
 }
 
-func IsNumeric(p string) bool {
+func IsPageNumber(p interface{}) bool {
 	return true
 }
 
-// func IsPageNum(p interface{}) bool {}
-
-// func IsPerpage(p interface{}) bool {}
+func IsPageSize(p interface{}) bool {
+	return true
+}
 
 func IsBinary(p interface{}) bool {
 	return true
 }
-
-// func IsNumericId(p interface{}) bool {}
 
 func IsPhoneNum(p interface{}) bool {
 	return true

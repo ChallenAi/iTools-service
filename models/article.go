@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"github.com/ChallenAi/iTools-service/utils"
 	"time"
 )
 
@@ -28,13 +29,13 @@ func (Article) TableName() string {
 	return "article"
 }
 
-func GetArticles() ([]Article, error) {
+func GetArticles(serviceParams *utils.ServiceParams) ([]Article, error) {
 	var articles []Article
 	err := DB.Find(&articles).Error
 	return articles, err
 }
 
-func SearchArticles() ([]Article, error) {
+func SearchArticles(serviceParams *utils.ServiceParams) ([]Article, error) {
 
 	// raw: sql is long, but useful
 	// var articles []Article
