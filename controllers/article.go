@@ -25,7 +25,7 @@ func GetArticles(ctx *fasthttp.RequestCtx) {
 	data, errors := validator.Validate(ctx.QueryArgs())
 	fmt.Println(data, errors)
 
-	articles, err := models.SearchArticles()
+	articles, err := models.SearchArticles(data)
 
 	if err != nil {
 		fmt.Println(err)
