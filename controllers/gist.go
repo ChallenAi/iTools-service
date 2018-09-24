@@ -1,18 +1,39 @@
 package controllers
 
 import (
-	// "fmt"
+	"fmt"
 	"github.com/ChallenAi/iTools-service/models"
 	"github.com/ChallenAi/iTools-service/utils"
 	"github.com/valyala/fasthttp"
 )
 
 func GetGists(ctx *fasthttp.RequestCtx) {
-	gists, err := models.GetGists()
-	if err != nil {
-		utils.ServerFail(ctx)
+	validator := utils.Validator{
+		Rules: map[string]utils.RuleItem{
+			"deleted": utils.RuleItem{Type: "binary", Required: false, Alias: "is_deleted"},
+			"uid":     utils.RuleItem{Type: "number", Required: false, Alias: "user_id"},
+			"typeId":  utils.RuleItem{Type: "number", Required: false, Alias: "tag_id"},
+			"page":    utils.RuleItem{Type: "pageNumber", Required: false},
+			"perpage": utils.RuleItem{Type: "pageSize", Required: false},
+			"keyword": utils.RuleItem{Type: "likeString", Required: false},
+		},
 	}
-	utils.RespData(ctx, gists)
+
+	data, errors := validator.Validate(ctx.QueryArgs())
+	// fmt.Println(data, errors)
+	if len(errors) > 0 {
+		utils.RespFail(ctx, 400, errors[0])
+		return
+	}
+
+	gists, err := models.GetGists(data)
+
+	if err != nil {
+		fmt.Println(err)
+		utils.ServerFail(ctx)
+	} else {
+		utils.RespData(ctx, gists)
+	}
 }
 
 func AddGist(ctx *fasthttp.RequestCtx) {
