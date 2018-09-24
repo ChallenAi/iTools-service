@@ -68,6 +68,7 @@ func SearchArticles(serviceParams *utils.ServiceParams) ([]Article, error) {
 	// build sql
 	articles := []Article{}
 	err := DB.
+		Where(serviceParams.CommonParams).
 		Select(`"user".user_name, article.*, tag.content as type_name`).
 		Joins("JOIN tag on article.type_id = tag.tag_id").
 		Joins("JOIN \"user\" on article.user_id = \"user\".user_id").

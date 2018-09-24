@@ -12,6 +12,7 @@ import (
 type RuleItem struct {
 	Type     string
 	Required bool
+	Alias    string
 }
 
 type Validator struct {
@@ -76,9 +77,17 @@ func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
 			case "binary":
 				if IsBinary(ruleItem.Type) {
 					if string(p) == "1" {
-						data.CommonParams[param] = true
+						if alias := ruleItem.Alias; alias != "" {
+							data.CommonParams[alias] = true
+						} else {
+							data.CommonParams[param] = true
+						}
 					} else {
-						data.CommonParams[param] = false
+						if alias := ruleItem.Alias; alias != "" {
+							data.CommonParams[alias] = false
+						} else {
+							data.CommonParams[param] = false
+						}
 					}
 				} else {
 					errors = append(errors, param+" is invalid")
@@ -86,14 +95,22 @@ func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
 				break
 			case "number":
 				if IsNumber(ruleItem.Type) {
-					data.CommonParams[param] = string(p)
+					if alias := ruleItem.Alias; alias != "" {
+						data.CommonParams[alias] = string(p)
+					} else {
+						data.CommonParams[param] = string(p)
+					}
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
 				break
 			case "phoneNum":
 				if IsPhoneNum(ruleItem.Type) {
-					data.CommonParams[param] = string(p)
+					if alias := ruleItem.Alias; alias != "" {
+						data.CommonParams[alias] = string(p)
+					} else {
+						data.CommonParams[param] = string(p)
+					}
 				} else {
 					errors = append(errors, param+" is invalid")
 				}

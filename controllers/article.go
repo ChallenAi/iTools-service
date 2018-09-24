@@ -13,9 +13,9 @@ func GetArticles(ctx *fasthttp.RequestCtx) {
 
 	validator := utils.Validator{
 		Rules: map[string]utils.RuleItem{
-			"deleted": utils.RuleItem{Type: "binary", Required: false},
-			"uid":     utils.RuleItem{Type: "number", Required: false},
-			"typeId":  utils.RuleItem{Type: "number", Required: false},
+			"deleted": utils.RuleItem{Type: "binary", Required: false, Alias: "deleted"},
+			"uid":     utils.RuleItem{Type: "number", Required: false, Alias: "user_id"},
+			"typeId":  utils.RuleItem{Type: "number", Required: false, Alias: "type_id"},
 			"page":    utils.RuleItem{Type: "pageNumber", Required: false},
 			"perpage": utils.RuleItem{Type: "pageSize", Required: false},
 			"keyword": utils.RuleItem{Type: "likeString", Required: false},
@@ -23,7 +23,11 @@ func GetArticles(ctx *fasthttp.RequestCtx) {
 	}
 
 	data, errors := validator.Validate(ctx.QueryArgs())
-	fmt.Println(data, errors)
+	// fmt.Println(data, errors)
+	if len(errors) > 0 {
+		utils.RespFail(ctx, 400, errors[0])
+		return
+	}
 
 	articles, err := models.SearchArticles(data)
 
