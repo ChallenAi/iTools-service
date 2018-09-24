@@ -40,6 +40,27 @@ func GetArticles(ctx *fasthttp.RequestCtx) {
 }
 
 func GetArticlesTitles(ctx *fasthttp.RequestCtx) {
+	validator := utils.Validator{
+		Rules: map[string]utils.RuleItem{
+			// "deleted": utils.RuleItem{Type: "binary", Required: false, Alias: "deleted"},
+			"typeId": utils.RuleItem{Type: "number", Required: false, Alias: "type_id"},
+		},
+	}
+
+	data, errors := validator.Validate(ctx.QueryArgs())
+	if len(errors) > 0 {
+		utils.RespFail(ctx, 400, errors[0])
+		return
+	}
+
+	articles, err := models.GetTitles(data)
+
+	if err != nil {
+		fmt.Println(err)
+		utils.ServerFail(ctx)
+	} else {
+		utils.RespData(ctx, articles)
+	}
 }
 
 func GetArticle(ctx *fasthttp.RequestCtx) {

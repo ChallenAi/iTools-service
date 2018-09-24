@@ -84,15 +84,22 @@ func (article *Article) addArticle() {
 
 }
 
-func getTitles() {
+func GetTitles(serviceParams *utils.ServiceParams) ([]Article, error) {
+	articles := []Article{}
+	serviceParams.CommonParams["deleted"] = false
+	err := DB.
+		Where(serviceParams.CommonParams).
+		Select(`title, article_id`).
+		Find(&articles).Error
+
+	return articles, err
+}
+
+func GetAllTags() {
 
 }
 
-func getAllTags() {
-
-}
-
-func getArticle() {
+func GetArticle() {
 
 }
 
