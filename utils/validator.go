@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	// "encoding/binary"
-	// "github.com/asaskevich/govalidator"
+	"github.com/asaskevich/govalidator"
 )
 
 type RuleItem struct {
@@ -35,7 +35,7 @@ func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
 		pageNumber int
 		pageSize   int
 		errors     []string
-		p          []byte
+		p          string
 	)
 
 	data := &ServiceParams{
@@ -46,26 +46,26 @@ func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
 	// map validator params type Mapper
 	for param, ruleItem := range v.Rules {
 
-		p = peekrable.Peek(param)
+		p = string(peekrable.Peek(param))
 		// fmt.Println(data)
 		// fmt.Println(param, string(peekrable.Peek(param)))
 
-		if ruleItem.Required == true && p == nil {
+		if ruleItem.Required == true && p == "" {
 			errors = append(errors, param+" is required")
 			continue
 		}
 
-		if p != nil {
+		if p != "" {
 			switch ruleItem.Type {
 			case "pageNumber":
-				if IsPageNumber(ruleItem.Type) {
-					pageNumber, _ = strconv.Atoi(string(p))
+				if IsPageNumber(p) {
+					pageNumber, _ = strconv.Atoi(p)
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
 				break
 			case "pageSize":
-				if IsPageSize(ruleItem.Type) {
+				if IsPageSize(p) {
 					pageSize, _ = strconv.Atoi(string(p))
 				} else {
 					errors = append(errors, param+" is invalid")
@@ -75,8 +75,8 @@ func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
 				data.LikeQuery = string(p)
 				break
 			case "binary":
-				if IsBinary(ruleItem.Type) {
-					if string(p) == "1" {
+				if IsBinary(p) {
+					if p == "1" {
 						if alias := ruleItem.Alias; alias != "" {
 							data.CommonParams[alias] = true
 						} else {
@@ -94,22 +94,22 @@ func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
 				}
 				break
 			case "number":
-				if IsNumber(ruleItem.Type) {
+				if IsNumber(p) {
 					if alias := ruleItem.Alias; alias != "" {
-						data.CommonParams[alias] = string(p)
+						data.CommonParams[alias] = p
 					} else {
-						data.CommonParams[param] = string(p)
+						data.CommonParams[param] = p
 					}
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
 				break
 			case "phoneNum":
-				if IsPhoneNum(ruleItem.Type) {
+				if IsPhoneNum(p) {
 					if alias := ruleItem.Alias; alias != "" {
-						data.CommonParams[alias] = string(p)
+						data.CommonParams[alias] = p
 					} else {
-						data.CommonParams[param] = string(p)
+						data.CommonParams[param] = p
 					}
 				} else {
 					errors = append(errors, param+" is invalid")
@@ -137,21 +137,21 @@ func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
 }
 
 func IsNumber(p string) bool {
-	return true
+	return govalidator.IsInt(p)
 }
 
-func IsPageNumber(p interface{}) bool {
-	return true
+func IsPageNumber(p string) bool {
+	return govalidator.IsInt(p)
 }
 
-func IsPageSize(p interface{}) bool {
-	return true
+func IsPageSize(p string) bool {
+	return govalidator.IsInt(p)
 }
 
-func IsBinary(p interface{}) bool {
-	return true
+func IsBinary(p string) bool {
+	return govalidator.IsInt(p)
 }
 
-func IsPhoneNum(p interface{}) bool {
-	return true
+func IsPhoneNum(p string) bool {
+	return govalidator.IsNumeric(p)
 }
