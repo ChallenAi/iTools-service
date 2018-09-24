@@ -34,13 +34,15 @@ func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
 		pageNumber int
 		pageSize   int
 		errors     []string
-		data       *ServiceParams
+		data       *ServiceParams = &ServiceParams{}
+		p          []byte
 	)
 	// map validator params type Mapper
 	for param, ruleItem := range v.Rules {
 
-		p := peekrable.Peek(param)
-		// fmt.Print(p)
+		p = peekrable.Peek(param)
+		// fmt.Println(data)
+		// fmt.Println(param, string(peekrable.Peek(param)))
 
 		if ruleItem.Required == true && p == nil {
 			errors = append(errors, param+" is required")
@@ -51,40 +53,46 @@ func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
 			switch ruleItem.Type {
 			case "pageNumber":
 				if IsPageNumber(ruleItem.Type) {
-					pageNumber, _ = strconv.Atoi(string(peekrable.Peek(param)))
+					pageNumber, _ = strconv.Atoi(string(p))
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
+				break
 			case "pageSize":
 				if IsPageSize(ruleItem.Type) {
-					pageSize, _ = strconv.Atoi(string(peekrable.Peek(param)))
+					pageSize, _ = strconv.Atoi(string(p))
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
+				break
 			case "likeQuery":
-				data.LikeQuery = string(peekrable.Peek(param))
+				data.LikeQuery = string(p)
+				break
 			case "binary":
 				if IsBinary(ruleItem.Type) {
-					if string(peekrable.Peek(param)) == "1" {
-						data.CommonParams[param] = true
+					if string(p) == "1" {
+						// data.CommonParams[param] = true
 					} else {
-						data.CommonParams[param] = false
+						// data.CommonParams[param] = false
 					}
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
+				break
 			case "number":
 				if IsNumber(ruleItem.Type) {
-					data.CommonParams[param] = string(peekrable.Peek(param))
+					data.CommonParams[param] = string(p)
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
+				break
 			case "phoneNum":
 				if IsPhoneNum(ruleItem.Type) {
-					data.CommonParams[param] = string(peekrable.Peek(param))
+					data.CommonParams[param] = string(p)
 				} else {
 					errors = append(errors, param+" is invalid")
 				}
+				break
 			}
 		}
 	}
