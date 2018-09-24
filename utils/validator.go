@@ -34,9 +34,14 @@ func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
 		pageNumber int
 		pageSize   int
 		errors     []string
-		data       *ServiceParams = &ServiceParams{}
 		p          []byte
 	)
+
+	data := &ServiceParams{
+		CommonParams: map[string]interface{}{},
+		Limit:        10,
+		Offset:       0,
+	}
 	// map validator params type Mapper
 	for param, ruleItem := range v.Rules {
 
@@ -71,9 +76,9 @@ func (v *Validator) Validate(peekrable Peekrable) (*ServiceParams, []string) {
 			case "binary":
 				if IsBinary(ruleItem.Type) {
 					if string(p) == "1" {
-						// data.CommonParams[param] = true
+						data.CommonParams[param] = true
 					} else {
-						// data.CommonParams[param] = false
+						data.CommonParams[param] = false
 					}
 				} else {
 					errors = append(errors, param+" is invalid")
