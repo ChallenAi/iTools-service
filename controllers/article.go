@@ -89,4 +89,12 @@ func PostArticle(ctx *fasthttp.RequestCtx) {
 }
 
 func GetAllTags(ctx *fasthttp.RequestCtx) {
+	resu, err := models.GetAllTags()
+
+	if err != nil {
+		fmt.Println(err)
+		utils.ServerFail(ctx)
+	} else {
+		utils.RespData(ctx, resu)
+	}
 }

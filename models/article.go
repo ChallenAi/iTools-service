@@ -95,8 +95,33 @@ func GetTitles(serviceParams *utils.ServiceParams) ([]Article, error) {
 	return articles, err
 }
 
-func GetAllTags() {
+func GetAllTags() ([]map[string]interface{}, error) {
+	var (
+		typeId       string
+		typeName     string
+		articleCount string
+	)
+	resu := []map[string]interface{}{}
+	rows, err := DB.
+		Table("article, tag").
+		Group("article.type_id, tag.content").
+		Where("article.type_id = tag.tag_id").
+		Select(`article.type_id, tag.content, COUNT(article.type_id) as article_count`).
+		Rows()
 
+	if err == nil {
+		defer rows.Close()
+		for rows.Next() {
+			rows.Scan(&typeId, &typeName, &articleCount)
+			resu = append(resu, map[string]interface{}{
+				"typeId":       typeId,
+				"typeName":     typeName,
+				"articleCount": articleCount,
+			})
+		}
+	}
+
+	return resu, err
 }
 
 func GetArticle() {
