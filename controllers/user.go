@@ -1,12 +1,13 @@
 package controllers
 
 import (
+	"fmt"
 	"time"
 	// "fmt"
 	"github.com/ChallenAi/iTools-service/models"
 	"github.com/ChallenAi/iTools-service/utils"
-	"github.com/valyala/fasthttp"
 	"github.com/lib/pq"
+	"github.com/valyala/fasthttp"
 )
 
 func GetAllUsers(ctx *fasthttp.RequestCtx) {
@@ -20,9 +21,10 @@ func GetAllUsers(ctx *fasthttp.RequestCtx) {
 func Login(ctx *fasthttp.RequestCtx) {
 	postArgs := ctx.PostArgs()
 
-	phoneNum := string(postArgs.Peek("phoneNum"))
-	if phoneNum == "" {
-		utils.RespFail(ctx, 400, "request error: phoneNum or password is wrong")
+	// fmt.Println(string(postArgs.Peek("username")), string(postArgs.Peek("password")))
+	username := string(postArgs.Peek("username"))
+	if username == "" {
+		utils.RespFail(ctx, 400, "request error: username or password is wrong")
 		return
 	}
 
@@ -37,8 +39,8 @@ func Login(ctx *fasthttp.RequestCtx) {
 		UserName: "有",
 	}
 
-	if phoneNum == "Test" {
-		if password == "1234" {
+	if username == "Test" {
+		if password == "12345678" {
 			utils.RespData(ctx, user)
 			return
 		} else {
@@ -52,21 +54,21 @@ func Login(ctx *fasthttp.RequestCtx) {
 
 func Register(ctx *fasthttp.RequestCtx) {
 	user := &models.User{
-		UserName: "小子",
-		Password: "1234",
-		PhoneNum: "15317752613",
-		Avatar: "/img/timg.jpeg",
-		CreateAt: time.Now(),
-		UpdateAt: time.Now(),
-		IsValid: true,
-		IsDeleted: false,
+		UserName:           "小子",
+		Password:           "1234",
+		PhoneNum:           "15317752613",
+		Avatar:             "/img/timg.jpeg",
+		CreateAt:           time.Now(),
+		UpdateAt:           time.Now(),
+		IsValid:            true,
+		IsDeleted:          false,
 		PasswordVerifyCode: "abcd",
 	}
 
 	err := user.Persist()
 	if err != nil {
 		if err.(*pq.Error).Code.Name() == "unique_violation" {
-			utils.RespFail(ctx, 400, "duplicated: phoneNum")
+			utils.RespFail(ctx, 400, "duplicated: username")
 		} else {
 			utils.ServerFail(ctx)
 		}

@@ -25,6 +25,8 @@ func main() {
 
 	router := fasthttprouter.New()
 	router.GET("/ping", Handle(controllers.Pong))
+	router.GET("/", Handle(controllers.Index))
+	router.GET("/index.html", Handle(controllers.Index))
 
 	// user
 	router.GET("/api/users", Handle(controllers.GetAllUsers))
@@ -68,8 +70,6 @@ func main() {
 	router.DELETE("/api/pass/:id", Handle(controllers.DeletePass))
 
 	router.NotFound = controllers.NotFound
-
-	router.ServeFiles("/img/*filepath", "static/img")
 
 	fmt.Println("server is running at " + conf.Port + "...")
 	log.Fatal(fasthttp.ListenAndServe(":"+conf.Port, router.Handler))
